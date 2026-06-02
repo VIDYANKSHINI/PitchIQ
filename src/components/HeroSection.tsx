@@ -1,10 +1,47 @@
-import React, { Suspense } from "react"
+import React, { Suspense, useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 import ErrorBoundary from "./ErrorBoundary"
 
 const Spline = React.lazy(() => import("@splinetool/react-spline"))
 
 export default function HeroSection() {
+  const [shouldRenderSpline, setShouldRenderSpline] = useState(false)
+  const [isMobile, setIsMobile] = useState(true)
+  const sectionRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
+
+  useEffect(() => {
+    if (isMobile) {
+      setShouldRenderSpline(false)
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShouldRenderSpline(entry.isIntersecting)
+      },
+      { 
+        root: null,
+        threshold: 0.01 // Unmount as soon as the hero is off screen
+      }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [isMobile])
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -37,27 +74,40 @@ export default function HeroSection() {
   }
 
   return (
-    <section className="relative min-h-screen flex items-end bg-hero-bg overflow-hidden">
-      {/* Spline 3D Background */}
-      <div className="absolute inset-0">
-        <ErrorBoundary fallback={
-          <div className="absolute inset-0 bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 flex items-center justify-center overflow-hidden">
-            {/* Ambient background glow if WebGL fails */}
-            <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
-            <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
-          </div>
-        }>
-          <Suspense fallback={<div className="absolute inset-0 bg-hero-bg animate-pulse" />}>
-            <Spline
-              scene="https://prod.spline.design/Slk6b8kz3LRlKiyk/scene.splinecode"
-              className="w-full h-full"
-            />
-          </Suspense>
-        </ErrorBoundary>
+    <section ref={sectionRef} className="relative min-h-screen flex items-end bg-hero-bg overflow-hidden">
+      {/* Premium CSS Ambient Fallback Background (Always rendered in base layer) */}
+      <div className="absolute inset-0 bg-neutral-950 flex items-center justify-center overflow-hidden pointer-events-none">
+        {/* Grid pattern */}
+        <div 
+          className="absolute inset-0 opacity-[0.12]" 
+          style={{
+            backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
+            backgroundSize: '40px 40px'
+          }}
+        />
+        {/* Moving / Glowing blobs */}
+        <div className="absolute top-[20%] left-[20%] w-[350px] h-[350px] bg-primary/10 rounded-full blur-[100px] animate-pulse" />
+        <div className="absolute bottom-[30%] right-[10%] w-[450px] h-[450px] bg-emerald-500/5 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-[60%] left-[50%] w-[300px] h-[300px] bg-emerald-600/5 rounded-full blur-[90px] animate-pulse" style={{ animationDelay: '4s' }} />
       </div>
 
+      {/* Spline 3D Background - Loaded only on desktop and only when inside viewport */}
+      {shouldRenderSpline && (
+        <div className="absolute inset-0 z-0">
+          <ErrorBoundary fallback={null}>
+            <Suspense fallback={null}>
+              <Spline
+                scene="https://prod.spline.design/Slk6b8kz3LRlKiyk/scene.splinecode"
+                className="w-full h-full"
+              />
+            </Suspense>
+          </ErrorBoundary>
+        </div>
+      )}
+
       {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/30 z-[1] pointer-events-none" />
+      <div className="absolute inset-0 bg-black/45 z-[1] pointer-events-none" />
+
 
       {/* Content container */}
       <motion.div
