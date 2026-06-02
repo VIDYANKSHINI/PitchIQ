@@ -1,47 +1,133 @@
-import React, { Suspense, useState, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import { motion } from "framer-motion"
-import ErrorBoundary from "./ErrorBoundary"
 
-const Spline = React.lazy(() => import("@splinetool/react-spline"))
-
-export default function HeroSection() {
-  const [shouldRenderSpline, setShouldRenderSpline] = useState(false)
-  const [isMobile, setIsMobile] = useState(true)
-  const sectionRef = useRef<HTMLElement>(null)
+function AgentSwarmBackground() {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768)
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
+
+    let animationFrameId: number
+    let width = (canvas.width = window.innerWidth)
+    let height = (canvas.height = window.innerHeight)
+
+    interface Node {
+      x: number
+      y: number
+      vx: number
+      vy: number
+      radius: number
+      color: string
     }
-    
-    handleResize()
+
+    const nodes: Node[] = []
+    const nodeCount = Math.min(70, Math.floor((width * height) / 20000))
+
+    // Generate nodes matching PitchIQ green primary theme
+    for (let i = 0; i < nodeCount; i++) {
+      nodes.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.45, // Elegant slow speed
+        vy: (Math.random() - 0.5) * 0.45,
+        radius: Math.random() * 2 + 1.2,
+        color: i % 5 === 0 ? "rgba(34, 197, 94, 0.45)" : "rgba(255, 255, 255, 0.15)", 
+      })
+    }
+
+    const mouse = { x: -1000, y: -1000, radius: 140 }
+
+    const handleMouseMove = (e: MouseEvent) => {
+      mouse.x = e.clientX
+      mouse.y = e.clientY
+    }
+
+    const handleMouseLeave = () => {
+      mouse.x = -1000
+      mouse.y = -1000
+    }
+
+    const handleResize = () => {
+      if (!canvas) return
+      width = canvas.width = window.innerWidth
+      height = canvas.height = window.innerHeight
+    }
+
+    window.addEventListener("mousemove", handleMouseMove)
+    window.addEventListener("mouseleave", handleMouseLeave)
     window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
+
+    const animate = () => {
+      ctx.clearRect(0, 0, width, height)
+
+      // Draw connection lines
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x
+          const dy = nodes[i].y - nodes[j].y
+          const dist = Math.sqrt(dx * dx + dy * dy)
+
+          if (dist < 110) {
+            const alpha = (1 - dist / 110) * 0.12
+            ctx.strokeStyle = `rgba(34, 197, 94, ${alpha})`
+            ctx.lineWidth = 0.8
+            ctx.beginPath()
+            ctx.moveTo(nodes[i].x, nodes[i].y)
+            ctx.lineTo(nodes[j].x, nodes[j].y)
+            ctx.stroke()
+          }
+        }
+      }
+
+      // Draw and update nodes
+      nodes.forEach((node) => {
+        node.x += node.vx
+        node.y += node.vy
+
+        // Wrap around borders
+        if (node.x < 0) node.x = width
+        if (node.x > width) node.x = 0
+        if (node.y < 0) node.y = height
+        if (node.y > height) node.y = 0
+
+        // Mouse interaction (push effect)
+        const dx = node.x - mouse.x
+        const dy = node.y - mouse.y
+        const dist = Math.sqrt(dx * dx + dy * dy)
+        if (dist < mouse.radius) {
+          const force = (mouse.radius - dist) / mouse.radius
+          const angle = Math.atan2(dy, dx)
+          node.x += Math.cos(angle) * force * 1.5
+          node.y += Math.sin(angle) * force * 1.5
+        }
+
+        ctx.fillStyle = node.color
+        ctx.beginPath()
+        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2)
+        ctx.fill()
+      })
+
+      animationFrameId = requestAnimationFrame(animate)
+    }
+
+    animate()
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove)
+      window.removeEventListener("mouseleave", handleMouseLeave)
+      window.removeEventListener("resize", handleResize)
+      cancelAnimationFrame(animationFrameId)
+    }
   }, [])
 
-  useEffect(() => {
-    if (isMobile) {
-      setShouldRenderSpline(false)
-      return
-    }
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-70" />
+}
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setShouldRenderSpline(entry.isIntersecting)
-      },
-      { 
-        root: null,
-        threshold: 0.01 // Unmount as soon as the hero is off screen
-      }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current)
-    }
-
-    return () => observer.disconnect()
-  }, [isMobile])
-
+export default function HeroSection() {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -74,7 +160,7 @@ export default function HeroSection() {
   }
 
   return (
-    <section ref={sectionRef} className="relative min-h-screen flex items-end bg-hero-bg overflow-hidden">
+    <section className="relative min-h-screen flex items-end bg-hero-bg overflow-hidden">
       {/* Premium CSS Ambient Fallback Background (Always rendered in base layer) */}
       <div className="absolute inset-0 bg-neutral-950 flex items-center justify-center overflow-hidden pointer-events-none">
         {/* Grid pattern */}
@@ -91,23 +177,11 @@ export default function HeroSection() {
         <div className="absolute top-[60%] left-[50%] w-[300px] h-[300px] bg-emerald-600/5 rounded-full blur-[90px] animate-pulse" style={{ animationDelay: '4s' }} />
       </div>
 
-      {/* Spline 3D Background - Loaded only on desktop and only when inside viewport */}
-      {shouldRenderSpline && (
-        <div className="absolute inset-0 z-0">
-          <ErrorBoundary fallback={null}>
-            <Suspense fallback={null}>
-              <Spline
-                scene="https://prod.spline.design/Slk6b8kz3LRlKiyk/scene.splinecode"
-                className="w-full h-full"
-              />
-            </Suspense>
-          </ErrorBoundary>
-        </div>
-      )}
+      {/* Interactive 2D Canvas Agent Swarm (High-performance, 0% Lag) */}
+      <AgentSwarmBackground />
 
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/45 z-[1] pointer-events-none" />
-
 
       {/* Content container */}
       <motion.div
