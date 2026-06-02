@@ -33,9 +33,9 @@ function App() {
     setTimeout(() => {
       const consoleEl = document.querySelector("#agents")
       if (consoleEl) {
-        consoleEl.scrollIntoView({ behavior: "smooth" })
+        consoleEl.scrollIntoView({ behavior: "smooth", block: "start" })
       }
-    }, 100)
+    }, 150)
 
     // Call backend API
     fetch('/api/analyze', {
@@ -67,7 +67,7 @@ function App() {
     setTimeout(() => {
       const scoreEl = document.querySelector("#pricing")
       if (scoreEl) {
-        scoreEl.scrollIntoView({ behavior: "smooth" })
+        scoreEl.scrollIntoView({ behavior: "smooth", block: "start" })
       }
     }, 800)
   }
@@ -100,7 +100,7 @@ function App() {
 
       {/* Results / Validation Dashboard */}
       <AnimatePresence mode="wait">
-        {!analysisComplete ? (
+        {!analysisComplete && !isAnalyzing ? (
           <motion.div
             key="locked"
             initial={{ opacity: 0, y: 20 }}
