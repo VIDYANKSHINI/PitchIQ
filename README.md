@@ -1,14 +1,24 @@
 # PitchIQ AI - Your AI Co-Founder Swarm 🚀
 
-PitchIQ is an AI-powered startup validation engine and co-founder swarm that analyzes your startup idea in real-time, compiles competitor intelligence, identifies key business risks, creates an India-first GTM strategy, and drafts an investor-ready pitch.
+A synchronized AI validation swarm running real-time competitive analysis, risk testing, and localized India-first GTM playbooks.
 
-![PitchIQ Dashboard Preview](./public/pitchiq_dashboard.png)
+---
+
+## Problem
+
+First-time founders and builders face massive uncertainty when validating startup ideas. Traditional market research is slow, expensive, and fails to identify hyper-local execution risks, leaving teams with generic strategies and unstructured pitch outlines.
+
+---
+
+## Solution
+
+PitchIQ solves this by providing an autonomous swarm of AI agents that instantly research competitors, pressure-test business assumptions, map out localization roadmaps (e.g. UPI/WhatsApp hooks), and output a structured, downloadable investor brief.
 
 ---
 
 ## How PitchIQ Works (Multi-Agent Swarm)
 
-When you input a startup idea, PitchIQ spawns a synchronized swarm of specialized AI validation agents running consensus checks:
+When a startup idea is input, PitchIQ coordinates specialized agents:
 
 ```mermaid
 graph TD
@@ -19,7 +29,7 @@ graph TD
         Coordinator --> Devil[Devil's Advocate]
         Coordinator --> GTM[India GTM Agent]
         
-        Scout -->|Competitor Analysis| Consensus[Consensus Integrator]
+        Scout -->|Competitor Landscape| Consensus[Consensus Integrator]
         Devil -->|Vulnerability & Risks| Consensus
         GTM -->|Localized GTM & Innovation| Consensus
     end
@@ -29,22 +39,22 @@ graph TD
     Output --> Interactive[Co-Founder Chatbot Console]
 ```
 
-- **Market Scout**: Conducts competitor research to identify direct and indirect alternatives.
-- **Devil's Advocate**: Challenges assumptions and identifies critical vulnerability vectors.
-- **India GTM Agent**: Formulates a go-to-market playbook tailored to the local Indian landscape, highlighting UPI/ONDC integrations, vernacular strategies, and core differentiation.
-- **Pitch Writer**: Consolidates all agent consensus data into a structured investor memorandum and scores startup viability.
+- **Market Scout**: Evaluates competitor landscapes, pricing models, and SWOT points.
+- **Devil's Advocate**: Pressure-tests assumptions to find potential failures and bottlenecks.
+- **India GTM Agent**: Outlines regional rollouts, vernacular interfaces, and UPI/ONDC integrations.
+- **Pitch Writer**: Consolidates swarm intelligence into the final viability index and downloadable investor memorandum.
 
 ---
 
-## Key Features
+## Features
 
-- **Viability Assessment Index**: 0-100 rating scale across five parameters: Market Potential, India Fit, Investor Appeal, Competition, and Execution Difficulty.
-- **Competitor Mapping**: Detailed SWOT analysis of primary market incumbents, detailing their pricing models, strengths, and weaknesses.
-- **Vulnerability Analysis**: Anticipates risk vectors (e.g. CAC inflation, regulatory barriers, supply churn) along with their business impact level.
-- **India-First Playbook**: Actionable roadmap phases emphasizing localization, voice-ledgers, WhatsApp onboarding, and ONDC Commission bypasses.
-- **Core Innovation Callout**: Visualizes how your startup stands out and details unique operational/technical advantages.
-- **One-Page Investor Brief**: Summarizes the Problem, Solution, Market Opportunity, Revenue Model, and Moat, available for instant text download.
-- **Interactive Co-Founder Chat**: Continue brainstorming your strategy, querying risks, or refining your product value proposition with the AI swarm in real-time.
+- **Viability Assessment Index**: 0-100 rating scale across parameters like Market Potential, India Fit, and Competition.
+- **Competitor Mapping**: Detailed SWOT analysis of primary incumbents with their pricing models.
+- **Vulnerability Analysis**: Anticipates risk vectors (e.g. CAC inflation, compliance) with impact ratings.
+- **India-First Playbook**: Actionable roadmap emphasizing UPI settlement, WhatsApp bots, and ONDC catalogs.
+- **Core Innovation Callout**: Visualizes your startup's core differentiators and technical moats.
+- **One-Page Investor Brief**: Interactive summaries available for instant `.txt` file download.
+- **Interactive Co-Founder Chat**: Brainstorm strategy with the co-founder agents in real-time.
 
 ---
 
@@ -56,28 +66,60 @@ graph TD
 
 ---
 
-## Local Development Setup
+## Setup
 
 ### 1. Prerequisites
-Ensure you have [Node.js](https://nodejs.org/) installed (version 18+ recommended).
+Ensure you have [Node.js](https://nodejs.org/) installed (version 18+).
 
-### 2. Install Dependencies
-Clone the repository and install packages in the root:
+### 2. Installation
+Install project dependencies in the root directory:
 ```bash
 npm install
 ```
 
-### 3. Add API Credentials
-Create a `.env` file in the root directory and add your Google Gemini API Key:
+### 3. Environment Variable
+Create a `.env` file in the root directory:
 ```env
-GEMINI_API_KEY="your-gemini-api-key"
+GEMINI_API_KEY="your-google-gemini-api-key"
 ```
-*Note: If no API key is found, the server automatically falls back to the dynamic, rule-based mock engine.*
+*Note: If no API key is specified, the application will automatically fall back to the dynamic rules-based mock engine.*
 
 ### 4. Start Development Servers
-Run the backend and frontend concurrently:
+Start both the backend and frontend concurrently:
 ```bash
 npm run dev
 ```
-- **Frontend App**: `http://localhost:5173`
-- **Backend Server**: `http://localhost:5001`
+
+---
+
+## Usage
+
+1. **Input Startup Concept**: Enter your startup description in the main textarea.
+2. **Launch AI Swarm**: Click **Analyze Startup** to trigger the analysis engine.
+3. **Inspect Live Reasoning**: Scroll to check the **Agent Activity Console** as log inputs stream.
+4. **Read Report Sections**: Review the Viability Score, Competitor Landscape, GTM Roadmap, and Innovation panel.
+5. **Download Memorandum Brief**: Click **Download PDF Brief** to save your investor brief.
+6. **Consult AI Swarm**: Use the bottom interactive chat to ask follow-up questions.
+
+---
+
+## Screenshots
+
+Below is a flat UI dashboard preview of PitchIQ AI:
+
+![PitchIQ Dashboard Preview](./public/pitchiq_dashboard.png)
+
+---
+
+## Demo
+
+- **Frontend App Url (Local)**: `http://localhost:5173`
+- **Backend API Url (Local)**: `http://localhost:5001`
+- **Render Production Url**: Connected for auto-deployment via Github integration.
+
+---
+
+## Team / License
+
+- **License**: MIT License - feel free to use and adapt this system for your own startup builds.
+- **Creator**: Developed as a modern validation tool for founders.
