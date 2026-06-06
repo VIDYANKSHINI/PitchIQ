@@ -18,7 +18,7 @@ export default function AgentActivity({ isAnalyzing, analysisData, onComplete }:
   const [logs, setLogs] = useState<LogLine[]>([
     { text: "System standby. Awaiting startup description input...", type: "system", timestamp: "00:00:00" },
   ])
-  const terminalEndRef = useRef<HTMLDivElement>(null)
+  const logContainerRef = useRef<HTMLDivElement>(null)
   const [logQueue, setLogQueue] = useState<Omit<LogLine, "timestamp">[]>([])
   const [displayedCount, setDisplayedCount] = useState(0)
 
@@ -68,8 +68,11 @@ export default function AgentActivity({ isAnalyzing, analysisData, onComplete }:
   }, [isAnalyzing, logQueue, displayedCount, analysisData, onComplete])
 
   useEffect(() => {
-    if (terminalEndRef.current) {
-      terminalEndRef.current.scrollIntoView({ behavior: "smooth" })
+    if (logContainerRef.current) {
+      logContainerRef.current.scrollTo({
+        top: logContainerRef.current.scrollHeight,
+        behavior: "smooth"
+      })
     }
   }, [logs])
 
@@ -92,7 +95,7 @@ export default function AgentActivity({ isAnalyzing, analysisData, onComplete }:
           </div>
         </div>
 
-        <div className="bg-black/80 border border-border/50 rounded-xl p-4 md:p-6 font-mono text-xs md:text-sm h-80 overflow-y-auto flex flex-col gap-2 shadow-inner select-text">
+        <div ref={logContainerRef} className="bg-black/80 border border-border/50 rounded-xl p-4 md:p-6 font-mono text-xs md:text-sm h-80 overflow-y-auto flex flex-col gap-2 shadow-inner select-text">
           <AnimatePresence initial={false}>
             {logs.map((log, i) => {
               let colorClass = "text-foreground"
@@ -117,7 +120,6 @@ export default function AgentActivity({ isAnalyzing, analysisData, onComplete }:
               )
             })}
           </AnimatePresence>
-          <div ref={terminalEndRef} />
         </div>
       </div>
     </section>

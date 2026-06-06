@@ -8,6 +8,7 @@ interface PitchSection {
 }
 
 interface PitchData {
+  businessTitle?: string
   sections: PitchSection[]
   gtmStrategy: string
   criticalRisks: string
@@ -19,6 +20,8 @@ interface InvestorPitchProps {
 
 export default function InvestorPitch({ pitchData }: InvestorPitchProps) {
   const [downloading, setDownloading] = useState(false)
+
+  const businessTitle = pitchData?.businessTitle || "WanderLoom AI"
 
   const sections = pitchData?.sections || [
     {
@@ -51,6 +54,7 @@ export default function InvestorPitch({ pitchData }: InvestorPitchProps) {
     setTimeout(() => {
       // Generate dynamically based on dynamic props
       let content = `PITCHIQ AI - STARTUP VALIDATION BRIEF\n` +
+        `VENTURE: ${businessTitle.toUpperCase()}\n` +
         `DATE: ${new Date().toLocaleDateString()}\n\n`
       
       sections.forEach((sect) => {
@@ -64,7 +68,7 @@ export default function InvestorPitch({ pitchData }: InvestorPitchProps) {
       const url = URL.createObjectURL(blob)
       const link = document.createElement("a")
       link.href = url
-      link.download = "PitchIQ-Startup-Brief.txt"
+      link.download = `${businessTitle.replace(/\s+/g, "-")}-Startup-Brief.txt`
       link.click()
       URL.revokeObjectURL(url)
       setDownloading(false)
@@ -114,8 +118,11 @@ export default function InvestorPitch({ pitchData }: InvestorPitchProps) {
         <div className="flex flex-col gap-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border/20 pb-6 gap-4">
             <div>
-              <h3 className="text-xl font-bold text-foreground tracking-tight uppercase">
-                PitchIQ Venture Summary
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-primary/20 text-primary border border-primary/30 mb-2 font-mono animate-pulse">
+                Featured Venture
+              </div>
+              <h3 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight uppercase bg-gradient-to-r from-primary via-emerald-400 to-primary bg-clip-text text-transparent drop-shadow-sm">
+                {businessTitle}
               </h3>
               <p className="text-muted-foreground text-xs font-mono mt-1">
                 VALIDATION CODE: PIQ-2026-T1

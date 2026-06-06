@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import { CheckCircle2, ArrowRight } from "lucide-react"
+import { CheckCircle2, ArrowRight, Sparkles } from "lucide-react"
 
 interface GtmStep {
   phase: string
@@ -7,11 +7,18 @@ interface GtmStep {
   highlights: string[]
 }
 
-interface IndiaGtmProps {
-  gtmData?: GtmStep[]
+interface InnovationDetail {
+  title: string
+  description: string
+  points: string[]
 }
 
-export default function IndiaGtm({ gtmData }: IndiaGtmProps) {
+interface IndiaGtmProps {
+  gtmData?: GtmStep[]
+  innovationData?: InnovationDetail
+}
+
+export default function IndiaGtm({ gtmData, innovationData }: IndiaGtmProps) {
   const roadmap = gtmData || [
     {
       phase: "Phase 1",
@@ -32,6 +39,16 @@ export default function IndiaGtm({ gtmData }: IndiaGtmProps) {
       ],
     },
   ]
+
+  const innovation = innovationData || {
+    title: "Zero-Friction Conversational Commerce Moat",
+    description: "Our co-founder agent swarm bypasses clunky App Store installations by deploying a lightweight, AI-driven planning flow natively on WhatsApp, coupled with automatic offline UPI QR validation loops.",
+    points: [
+      "Grassroots Niche Guild Networks: Direct physical partnerships with regional homestay hosts and tourist guilds that aren't indexed on global OTAs like Airbnb or MakeMyTrip.",
+      "Dynamic Vernacular Dialect Routing: Multi-agent conversational translation system that automatically parses Hinglish, Tamil-English, and other colloquial queries to return accurate itineraries.",
+      "Frictionless Instant UPI Node: Bypasses 3-5 day banking settlement delays by routing commissions directly to regional operators' accounts instantly upon booking validation."
+    ]
+  }
 
   return (
     <section className="py-24 px-6 md:px-12 max-w-5xl mx-auto relative z-10">
@@ -107,6 +124,59 @@ export default function IndiaGtm({ gtmData }: IndiaGtmProps) {
           </motion.div>
         ))}
       </div>
+
+      {/* Innovation / How We Stand Out section */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+        className="mt-12 bg-gradient-to-r from-primary/10 via-secondary/15 to-transparent border border-primary/20 rounded-xl p-8 relative overflow-hidden"
+        style={{
+          boxShadow: "inset 0 1px 0 0 rgba(255,255,255,0.03)",
+        }}
+      >
+        <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="flex flex-col gap-6 relative z-10">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary/20 rounded-lg text-primary border border-primary/30">
+              <Sparkles className="w-5 h-5 animate-pulse" />
+            </div>
+            <div>
+              <span className="text-xs font-bold font-mono tracking-widest text-primary uppercase">Innovation</span>
+              <h3 className="text-xl md:text-2xl font-bold text-foreground tracking-tight">
+                How We Stand Out: {innovation.title}
+              </h3>
+            </div>
+          </div>
+          
+          <p className="text-muted-foreground font-light text-sm md:text-base leading-relaxed max-w-3xl">
+            {innovation.description}
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-border/20 pt-6 mt-2">
+            {innovation.points.map((pt, i) => {
+              const parts = pt.split(":")
+              const title = parts[0]
+              const text = parts.slice(1).join(":")
+              return (
+                <div key={i} className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                    <h4 className="text-sm font-bold text-foreground tracking-tight uppercase">
+                      {title}
+                    </h4>
+                  </div>
+                  <p className="text-xs text-muted-foreground font-light leading-relaxed">
+                    {text}
+                  </p>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </motion.div>
     </section>
   )
 }

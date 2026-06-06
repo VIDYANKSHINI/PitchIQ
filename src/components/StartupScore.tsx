@@ -73,9 +73,36 @@ export default function StartupScore({ scoreData }: StartupScoreProps) {
             Overall Rating
           </h3>
 
-          <div className="relative w-40 h-40 flex items-center justify-center rounded-full border-4 border-muted/50">
+          <div className="relative w-40 h-40 flex items-center justify-center">
+            {/* SVG Radial Gauge */}
+            <svg className="absolute w-full h-full transform -rotate-90" viewBox="0 0 160 160">
+              {/* Background circle */}
+              <circle
+                cx="80"
+                cy="80"
+                r="70"
+                className="stroke-neutral-800"
+                strokeWidth="6"
+                fill="transparent"
+              />
+              {/* Animated progress circle */}
+              <motion.circle
+                cx="80"
+                cy="80"
+                r="70"
+                className="stroke-primary"
+                strokeWidth="6"
+                fill="transparent"
+                strokeDasharray="440"
+                initial={{ strokeDashoffset: 440 }}
+                animate={{ strokeDashoffset: 440 - (440 * overallScore) / 100 }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
+                strokeLinecap="round"
+              />
+            </svg>
+
             {/* Pulsing glow ring inside */}
-            <div className="absolute inset-2 rounded-full border border-primary/20 bg-primary/5 animate-pulse" />
+            <div className="absolute inset-5 rounded-full border border-primary/10 bg-primary/5 animate-pulse" />
             
             <div className="flex flex-col items-center relative z-10">
               <span className="text-5xl font-bold text-foreground font-sora">{overallScore}</span>

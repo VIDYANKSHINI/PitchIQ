@@ -12,7 +12,7 @@ import StartupScore from "./components/StartupScore"
 import CoFounderChat from "./components/CoFounderChat"
 import Footer from "./components/Footer"
 import { motion, AnimatePresence } from "framer-motion"
-import { Lock } from "lucide-react"
+import { Lock, Terminal } from "lucide-react"
 
 function App() {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -122,6 +122,28 @@ function App() {
               </p>
             </div>
           </motion.div>
+        ) : isAnalyzing && !analysisComplete ? (
+          <motion.div
+            key="analyzing"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5 }}
+            className="py-16 px-6 max-w-xl mx-auto text-center"
+          >
+            <div className="bg-secondary/30 backdrop-blur-xl border border-border/30 rounded-2xl p-8 flex flex-col items-center gap-4 shadow-2xl relative overflow-hidden">
+              <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="p-4 bg-primary/10 rounded-full text-primary border border-primary/20 animate-spin">
+                <Terminal className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-bold tracking-tight text-foreground uppercase animate-pulse">
+                Analyzing...
+              </h3>
+              <p className="text-muted-foreground text-sm font-light leading-relaxed">
+                The AI validation swarm is researching competitors, evaluating risks, and compiling your report. Please check the console activity above.
+              </p>
+            </div>
+          </motion.div>
         ) : (
           <motion.div
             key="results"
@@ -139,7 +161,7 @@ function App() {
             <FailureAnalysis risksData={analysisData?.risks} />
 
             {/* India GTM Strategy (Section 6) */}
-            <IndiaGtm gtmData={analysisData?.gtm} />
+            <IndiaGtm gtmData={analysisData?.gtm} innovationData={analysisData?.innovation} />
 
             {/* Investor Pitch Preview (Section 7) */}
             <InvestorPitch pitchData={analysisData?.pitch} />

@@ -1,5 +1,8 @@
-import { useEffect, useRef } from "react"
+import React, { Suspense, useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
+import ErrorBoundary from "./ErrorBoundary"
+
+const Spline = React.lazy(() => import("@splinetool/react-spline"))
 
 function AgentSwarmBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -128,6 +131,43 @@ function AgentSwarmBackground() {
 }
 
 export default function HeroSection() {
+  const [shouldRenderSpline, setShouldRenderSpline] = useState(false)
+  const [isMobile, setIsMobile] = useState(true)
+  const sectionRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
+
+  useEffect(() => {
+    if (isMobile) {
+      setShouldRenderSpline(false)
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShouldRenderSpline(entry.isIntersecting)
+      },
+      { 
+        root: null,
+        threshold: 0.01 // Unmount as soon as the hero is off screen
+      }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [isMobile])
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -160,7 +200,7 @@ export default function HeroSection() {
   }
 
   return (
-    <section className="relative min-h-screen flex items-end bg-hero-bg overflow-hidden">
+    <section ref={sectionRef} className="relative min-h-screen flex items-end bg-hero-bg overflow-hidden">
       {/* Premium CSS Ambient Fallback Background (Always rendered in base layer) */}
       <div className="absolute inset-0 bg-neutral-950 flex items-center justify-center overflow-hidden pointer-events-none">
         {/* Grid pattern */}
@@ -179,6 +219,20 @@ export default function HeroSection() {
 
       {/* Interactive 2D Canvas Agent Swarm (High-performance, 0% Lag) */}
       <AgentSwarmBackground />
+
+      {/* Spline 3D Background - Loaded only on desktop and only when inside viewport */}
+      {shouldRenderSpline && (
+        <div className="absolute inset-0 z-0">
+          <ErrorBoundary fallback={null}>
+            <Suspense fallback={null}>
+              <Spline
+                scene="https://prod.spline.design/Slk6b8kz3LRlKiyk/scene.splinecode"
+                className="w-full h-full"
+              />
+            </Suspense>
+          </ErrorBoundary>
+        </div>
+      )}
 
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/45 z-[1] pointer-events-none" />

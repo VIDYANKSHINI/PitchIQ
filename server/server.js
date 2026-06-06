@@ -102,9 +102,19 @@ const responseSchema = {
         required: ["phase", "title", "highlights"]
       }
     },
+    innovation: {
+      type: "object",
+      properties: {
+        title: { type: "string" },
+        description: { type: "string" },
+        points: { type: "array", items: { type: "string" } }
+      },
+      required: ["title", "description", "points"]
+    },
     pitch: {
       type: "object",
       properties: {
+        businessTitle: { type: "string" },
         sections: {
           type: "array",
           items: {
@@ -119,7 +129,7 @@ const responseSchema = {
         gtmStrategy: { type: "string" },
         criticalRisks: { type: "string" }
       },
-      required: ["sections", "gtmStrategy", "criticalRisks"]
+      required: ["businessTitle", "sections", "gtmStrategy", "criticalRisks"]
     },
     logs: {
       type: "array",
@@ -133,7 +143,7 @@ const responseSchema = {
       }
     }
   },
-  required: ["score", "competitors", "risks", "gtm", "pitch", "logs"]
+  required: ["score", "competitors", "risks", "gtm", "pitch", "innovation", "logs"]
 }
 
 // System Instruction / Prompt for Gemini
@@ -157,7 +167,12 @@ The JSON schema details:
   - phase: String (e.g., "Phase 1", "Phase 2").
   - title: String.
   - highlights: Array of 3 strings. Each string must be formatted as "Title: Description" (with a colon).
+- innovation: An object detailing how this startup stands out and its core innovation:
+  - title: A catchy short title for the innovation differentiator (e.g., "Zero-Friction WhatsApp Commerce Moat").
+  - description: A short paragraph explaining the unique angle or core technical/business innovation.
+  - points: Array of 3 strings outlining unique operational advantages, each formatted as "Title: Description" (with a colon).
 - pitch: An object containing:
+  - businessTitle: A catchy, creative, and memorable business name/title for the venture (e.g., "WanderLoom AI").
   - sections: Array of 5 objects representing Pitch Summary. The sections must have "title" (exactly one of: "Problem Statement", "Proposed Solution", "Market Opportunity", "Revenue Model", "Competitive Advantage") and "text" (a summary paragraph).
   - gtmStrategy: String summarizing the overall GTM strategy.
   - criticalRisks: String summarizing the critical risks.
@@ -709,13 +724,129 @@ function generateDynamicMock(idea) {
     }
   }
 
+  // Inject catchy business title and innovation details dynamically
+  const keywords = extractKeywords(idea)
+  const mainKeyword = keywords[0] || 'Venture'
+  const secondKeyword = keywords[1] || 'Flow'
+  
+  let catchyTitle = ""
+  if (category === 'travel') catchyTitle = `${mainKeyword}Wander AI`
+  else if (category === 'finance') catchyTitle = `${mainKeyword}Pay`
+  else if (category === 'health') catchyTitle = `${mainKeyword}Care`
+  else if (category === 'education') catchyTitle = `Edu${mainKeyword}`
+  else if (category === 'food') catchyTitle = `${mainKeyword}Bite`
+  else if (category === 'ecommerce') catchyTitle = `${mainKeyword}Cart`
+  else if (category === 'logistics') catchyTitle = `${mainKeyword}Route`
+  else if (category === 'agri') catchyTitle = `Agri${mainKeyword}`
+  else catchyTitle = `${mainKeyword}${secondKeyword} AI`
+
+  catchyTitle = catchyTitle.charAt(0).toUpperCase() + catchyTitle.slice(1)
+
+  let innovation = {
+    title: "Zero-Friction Conversational Commerce Moat",
+    description: `Our co-founder agent swarm bypasses clunky App Store installations by deploying a lightweight, AI-driven planning flow natively on WhatsApp, coupled with automatic offline UPI QR validation loops.`,
+    points: [
+      "Grassroots Niche Guild Networks: Direct physical partnerships with regional homestay hosts and tourist guilds that aren't indexed on global OTAs like Airbnb or MakeMyTrip.",
+      "Dynamic Vernacular Dialect Routing: Multi-agent conversational translation system that automatically parses Hinglish, Tamil-English, and other colloquial queries to return accurate itineraries.",
+      "Frictionless Instant UPI Node: Bypasses 3-5 day banking settlement delays by routing commissions directly to regional operators' accounts instantly upon booking validation."
+    ]
+  }
+
+  if (category === 'finance') {
+    innovation = {
+      title: "Conversational Ledger & AI Underwriting Engine",
+      description: `Bypasses traditional document-heavy KYC processes by building automated ledger logs directly from WhatsApp merchant conversations, feed-syncing to regional cooperative banking nodes.`,
+      points: [
+        "Alternative Cashflow Analysis: Algorithmic underwriting that scores informal shopkeepers based on raw transaction streams rather than standard credit histories.",
+        "Voice-Ledger Onboarding: High-accuracy speech-to-text nodes in local languages enabling non-literate merchants to log sales in seconds.",
+        "UPILite Micro-disbursement: Automated small-ticket loan triggers disbursed directly to merchant handles with auto-pay collection rules."
+      ]
+    }
+  } else if (category === 'health') {
+    innovation = {
+      title: "ASHA Grassroots Network & Vernacular Diagnostics",
+      description: `Leverages local health volunteers (ASHA workers) combined with AI symptom triage via WhatsApp to establish certified medical consulting nodes directly in Tier-3 villages.`,
+      points: [
+        "Regional Language AI Triage: Instantly converts regional medical queries into standardized clinical reports for doctors.",
+        "Direct UPI Prescription Checkout: One-click drug ordering and payment flow straight from the online consultation screen.",
+        "Local Pharmacy Delivery Sync: Automatically routes approved prescriptions to the closest local independent pharmacy for rapid home delivery."
+      ]
+    }
+  } else if (category === 'education') {
+    innovation = {
+      title: "WhatsApp Micro-Learning & Chapter Licensing",
+      description: `Disrupts traditional high-cost annual edtech models by offering laser-focused micro-lessons and automated homework help directly over WhatsApp for nominal single-use fees.`,
+      points: [
+        "WhatsApp OCR Homework Solver: Students snap a photo of a problem and receive step-by-step video solutions in under 10 seconds.",
+        "Micro-payment Topic Licensing: Bypasses large upfront course fees, letting students unlock individual topics for 10-30 INR via UPI.",
+        "Local Board Alignment: Tailored content libraries dynamically synchronized with individual regional state school board syllabi."
+      ]
+    }
+  } else if (category === 'food') {
+    innovation = {
+      title: "Zero-Commission ONDC Conversational Ordering",
+      description: `Eliminates the 18-25% platform markup commissions of traditional food tech apps by integrating menus directly onto open-source ONDC rails over WhatsApp.`,
+      points: [
+        "ONDC Catalog Mapping: Direct publishing of menus to the Open Network for Digital Commerce, bypassing central gatekeepers.",
+        "Conversational Order Assembly: High-fidelity natural language ordering bots that understand custom food adjustments in Hinglish.",
+        "Local Rider Fleet Dispatch: Real-time integration with decentralized local hyper-local delivery groups for lower-cost shipping."
+      ]
+    }
+  } else if (category === 'ecommerce') {
+    innovation = {
+      title: "AI Return-to-Origin (RTO) Risk Shield",
+      description: `Slashes the massive cost of Cash-on-Delivery (COD) product returns in India by scoring buyers' delivery behaviors and incentivizing pre-paid UPI checkout nodes.`,
+      points: [
+        "Dynamic RTO Risk Profiler: Real-time predictive models scoring the likelihood of delivery refusal based on location and historical data.",
+        "UPI Prepayment Nudges: Automatic conversational cashbacks offering up to 5% savings to convert high-risk COD orders into pre-paid sales.",
+        "WhatsApp Live Tracking: Keeping buyer excitement and engagement high through automated shipping status alerts."
+      ]
+    }
+  } else if (category === 'logistics') {
+    innovation = {
+      title: "Decentralized Intra-city Route Optimizer",
+      description: `Coordinates driver routing dynamically using low-bandwidth multi-agent negotiation systems, specifically tailored for crowded Tier-2 Indian business centers.`,
+      points: [
+        "Low-Bandwidth Dispatch: Fully functioning dispatch triggers operating via lightweight offline cellular signals and WhatsApp widgets.",
+        "Cooperative Hub Warehousing: Dynamic dispatch nodes hosted in small local shops, reducing heavy capital storage costs.",
+        "Real-Time Delivery Verification: Secure PIN validation syncs through instant UPI payout triggers upon delivery validation."
+      ]
+    }
+  } else if (category === 'agri') {
+    innovation = {
+      title: "Voice-driven Farm Yield Optimization",
+      description: `Bridges agricultural consulting gaps by offering voice-activated crop health diagnostics and localized input distribution directly to smallholder farmers.`,
+      points: [
+        "Voice Soil Assessment: Voice-first conversational guides for farmers to register soil tests and receive regional soil health recommendations.",
+        "Collective Crop Pooling: Aggregating smallholder harvests via WhatsApp to secure higher bargaining power with national wholesalers.",
+        "Direct-to-Farm Input Delivery: Partnerships with local warehouse distributors to ship fertilizers and seeds directly to fields with UPI billing."
+      ]
+    }
+  } else if (category === 'generic') {
+    innovation = {
+        title: "Localized Workflow Integration & Conversational Hub",
+        description: `Bypasses standard workflow complexity by linking operational modules directly into conversational messaging nodes, slashing setup costs for budget-conscious Indian firms.`,
+        points: [
+          "WhatsApp Native Interface: Interactive widgets running directly on messaging networks requiring zero customer application training.",
+          "Alternative Data Integrations: Synthesizing unstructured local reports into actionable business compliance ledger files.",
+          "UPI Business Settlement: Integrated instant checkout payment nodes reducing invoice payment delays by up to 80%."
+        ]
+      }
+    }
+
   // Populate base response and dynamically add logs
   const response = {
     score: { overall: data.overall, metrics: data.metrics },
     competitors: data.competitors,
     risks: data.risks,
     gtm: data.gtm,
-    pitch: data.pitch,
+    innovation: innovation,
+    pitch: {
+      businessTitle: catchyTitle,
+      sections: data.pitch.sections,
+      gtmStrategy: data.pitch.gtmStrategy,
+      criticalRisks: data.pitch.criticalRisks
+    },
     logs: [
       { text: "System: Initializing PitchIQ AI Swarm...", type: "system" },
       { text: `System: Core agents spawned to analyze concept: "${idea.substring(0, 45)}..."`, type: "system" },
