@@ -66,6 +66,44 @@ graph TD
 
 ---
 
+## Project Structure
+
+```text
+PitchIQ-AI/
+├── public/                  # Static assets (favicons, icons, and diagrams)
+├── server/                  # Node.js/Express backend for Gemini orchestration
+│   ├── .env.example         # Example configuration for environment variables
+│   ├── package.json         # Backend dependencies
+│   └── server.js            # Main backend server entry (handles multi-agent consensus logic)
+├── src/                     # React/TypeScript frontend
+│   ├── assets/              # Fonts, styling assets, and local media
+│   ├── components/          # Reusable React components
+│   │   ├── ui/              # Atom UI components (buttons, inputs)
+│   │   ├── AgentActivity.tsx# Live console showing agent reasoning logs
+│   │   ├── AgentsSection.tsx# Swarm coordinator UI panel
+│   │   ├── CoFounderChat.tsx# Interactive chat for strategy brainstorming
+│   │   ├── CompetitorAnalysis.tsx # SWOT and competitive landscape mapping
+│   │   ├── ErrorBoundary.tsx# Fallback handler for UI stability
+│   │   ├── FailureAnalysis.tsx # Devil's Advocate pressure-testing component
+│   │   ├── Footer.tsx       # Bottom navbar and creator links
+│   │   ├── HeroSection.tsx  # Dynamic introductory landing view
+│   │   ├── IndiaGtm.tsx     # Localized India-first playbook panel (UPI, WhatsApp, ONDC)
+│   │   ├── InputSection.tsx # Form input for the startup concept
+│   │   ├── InvestorPitch.tsx# Structured report and text exporter
+│   │   ├── Navbar.tsx       # Top navigation header
+│   │   └── StartupScore.tsx # Visual rating scale across viability parameters
+│   ├── lib/                 # Shared utilities and helper scripts
+│   │   └── utils.ts         # Tailwind/class merger utility
+│   ├── App.tsx              # Core App entry combining layout and state
+│   ├── index.css            # Tailwind directives and custom animation classes
+│   └── main.tsx             # DOM bootstrapper file
+├── package.json             # Root NPM dependencies
+├── tsconfig.json            # TypeScript configuration
+└── vite.config.ts           # Vite Bundler settings
+```
+
+---
+
 ## Setup
 
 ### 1. Prerequisites
