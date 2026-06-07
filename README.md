@@ -107,7 +107,10 @@ npm run dev
 
 Below is a flat UI dashboard preview of PitchIQ AI:
 
-![PitchIQ Dashboard Preview](./public/pitchiq_dashboard.png)
+<img width="1894" height="901" alt="image" src="https://github.com/user-attachments/assets/943904b8-0397-4716-80b9-5660bd1f22e4" />
+<img width="1893" height="904" alt="image" src="https://github.com/user-attachments/assets/847e460f-5d76-4d57-bb88-014e4bc7bbb0" />
+<img width="1892" height="896" alt="image" src="https://github.com/user-attachments/assets/f9abbc1a-6fd8-49c8-a345-8a97466fa608" />
+
 
 ---
 
@@ -115,7 +118,7 @@ Below is a flat UI dashboard preview of PitchIQ AI:
 
 - **Frontend App Url (Local)**: `http://localhost:5173`
 - **Backend API Url (Local)**: `http://localhost:5001`
-- **Render Production Url**: Connected for auto-deployment via Github integration.
+- **Render Production Url**: [Connected for auto-deployment via Github integration.](https://pitchiq-5cbb.onrender.com/)
 
 ---
 
