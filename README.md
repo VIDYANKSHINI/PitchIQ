@@ -125,4 +125,6 @@ Below is a flat UI dashboard preview of PitchIQ AI:
 ## Team / License
 
 - **License**: MIT License - feel free to use and adapt this system for your own startup builds.
-- **Creator**: Developed as a modern validation tool for founders.
+- **Creators / Team**:
+  - **[Vidyankshini](https://github.com/VIDYANKSHINI)** - Frontend, API, and Core Development
+  - **[Mayur Dhavan](https://github.com/mayur-dhavan)** - Original Idea & Backend Integration
